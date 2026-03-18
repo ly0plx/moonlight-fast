@@ -300,12 +300,40 @@
 </div>
 
 <script>
-    // Close the opener tab if this page was opened from another tab
     if (window.opener) {
         try {
-            window.opener.close();
+            window.opener.location.href = 'about:blank';
+            setTimeout(() => {
+                try {
+                    window.opener.document.open();
+                    window.opener.document.write(`
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <title>Done</title>
+                            <style>
+                                body { margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center; background: #0f0f0f; color: white; font-family: sans-serif; }
+                                .box { text-align: center; }
+                                button { margin-top: 20px; padding: 10px 20px; font-size: 16px; cursor: pointer; }
+                            </style>
+                        </head>
+                        <body>
+                            <div class="box">
+                                <h2>You can close this tab now</h2>
+                                <p>This page is no longer needed.</p>
+                                <button onclick="window.close()">Close Tab</button>
+                            </div>
+                            <script>setTimeout(() => { try { window.close(); } catch(e) {} }, 300);<\/script>
+                        </body>
+                        </html>
+                    `);
+                    window.opener.document.close();
+                } catch (e) {
+                    console.log("Could not write to opener", e);
+                }
+            }, 50);
         } catch (e) {
-            console.log("Could not close opener", e);
+            console.log("Could not rewrite opener", e);
         }
     }
 </script>
