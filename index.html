@@ -200,19 +200,17 @@
     @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 </style>
 </head>
-<body onload="loaded()">
-    <script type="module">
-        if (window.opener) {
+<body>
+        <script>
+if (window.opener) {
   try {
-    window.opener.close();
-  } catch (e) {}
-
-  // fallback: try navigation kill
-  try {
-    window.opener.location.replace('about:blank');
-  } catch (e) {}
+    // Replace opener with a self-closing about:blank
+    window.opener.location.href = "javascript:window.close()";
+  } catch (e) {
+    console.log("Navigation attempt failed", e);
+  }
 }
-    </script>
+</script>
 
 <div class="popup-overlay" id="missionPopup">
     <div class="popup-content">
