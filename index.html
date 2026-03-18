@@ -299,57 +299,15 @@
     </div>
 </div>
 
-    <script>
-  if (window.opener) {
-    try {
-      window.opener.location.href =
-        "data:text/html," +
-        encodeURIComponent(`
-          <!DOCTYPE html>
-          <html>
-          <head>
-            <title>Done</title>
-            <style>
-              body {
-                margin: 0;
-                height: 100vh;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                background: #0f0f0f;
-                color: white;
-                font-family: sans-serif;
-              }
-              .box {
-                text-align: center;
-              }
-              button {
-                margin-top: 20px;
-                padding: 10px 20px;
-                font-size: 16px;
-                cursor: pointer;
-              }
-            </style>
-          </head>
-          <body>
-            <div class="box">
-              <h2>You can close this tab now</h2>
-              <p>This page is no longer needed.</p>
-              <button onclick="window.close()">Close Tab</button>
-
-              <script>
-                setTimeout(() => {
-                  try { window.close(); } catch(e) {}
-                }, 300);
-              <\/script>
-            </div>
-          </body>
-          </html>
-        `);
-    } catch (e) {
-      console.log("Failed to rewrite opener", e);
+<script>
+    // Close the opener tab if this page was opened from another tab
+    if (window.opener) {
+        try {
+            window.opener.close();
+        } catch (e) {
+            console.log("Could not close opener", e);
+        }
     }
-  }
 </script>
 
 <script type="module">
@@ -438,7 +396,6 @@
             const preset = CLOAK_PRESETS[savedCloak];
             applyTabCloak(preset.title, preset.favicon);
         } else if (savedTitle && savedFavicon) {
-            // Load custom cloak if it was set
             cloakSelect.value = 'custom';
             customTitleGroup.classList.remove('hidden');
             customFaviconGroup.classList.remove('hidden');
@@ -446,7 +403,6 @@
             faviconUrlInput.value = savedFavicon;
             applyTabCloak(savedTitle, savedFavicon);
         } else {
-            // Default cloak - save it to localStorage
             cloakSelect.value = 'default';
             const preset = CLOAK_PRESETS['default'];
             applyTabCloak(preset.title, preset.favicon);
@@ -507,7 +463,6 @@
             faviconUrlInput.value = preset.favicon;
             applyTabCloak(preset.title, preset.favicon);
             
-            // Save the cloak preference
             localStorage.setItem('moonlight_cloak', e.target.value);
             localStorage.setItem('moonlight_cloak_title', preset.title);
             localStorage.setItem('moonlight_cloak_favicon', preset.favicon);
@@ -535,9 +490,7 @@
         document.title = title;
         
         let favicon = document.querySelector('link[rel="icon"]');
-        if (favicon) {
-            favicon.remove();
-        }
+        if (favicon) favicon.remove();
 
         if (faviconUrl) {
             const newFavicon = document.createElement('link');
